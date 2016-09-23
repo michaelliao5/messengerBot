@@ -1,0 +1,7 @@
+framework: net452
+import_targets: false
+
+source https://api.nuget.org/v3/index.json
+
+nuget FSharp.Data 2.3.2
+nuget Suave 1.1.3
