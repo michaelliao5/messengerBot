@@ -41,7 +41,7 @@ module Callback =
          // Callbacks are sent via POST requests
          POST >=>
             request (fun r ->
-            let data, _ = r.form.[0]
+            let data = System.Text.Encoding.UTF8.GetString(r.rawForm)
             let json = JsonValue.Parse(data)
             let callback = Callback.fromJson json
             match callback with
