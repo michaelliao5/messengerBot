@@ -57,15 +57,7 @@
   </Target>
   -->
   <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5.2'">
-      <ItemGroup>
-        <Reference Include="FSharp.Core">
-          <HintPath>..\packages\FSharp.Core\lib\net40\FSharp.Core.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5.2'" />
   </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5.2'">
@@ -104,10 +96,19 @@
     <Compile Include="Program.fs" />
     <None Include="test.fsx" />
     <Content Include="packages.config" />
+    <None Include="canopyTest.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ApiAiSDK">
       <HintPath>..\FbChatbot\packages\ApiAiSDK.1.6.5\lib\net35\ApiAiSDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="canopy">
+      <HintPath>..\FbChatbot\packages\canopy.1.5.0\lib\canopy.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.Core">
+      <HintPath>..\FbChatbot\packages\FSharp.Core.3.0.2\lib\net40\FSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -119,6 +120,11 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="WebDriver">
+      <HintPath>..\FbChatbot\packages\Selenium.WebDriver.3.4.0\lib\net40\WebDriver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
 </Project>
