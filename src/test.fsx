@@ -1,10 +1,13 @@
 ﻿#r "../packages/FSharp.Data/lib/net40/FSharp.Data.dll"
 #r "../packages/Suave/lib/net40/Suave.dll"
+#r "bin/debug/ApiAiSDK.dll"
+#r "bin/debug/Newtonsoft.Json.dll"
 
 #load "ParsingHelpers.fs"
 #load "CallbackAPI.fs"
 #load "SendAPI.fs"
 #load "API.fs"
+#load "MessageParsing.fs"
 
 
 
@@ -15,7 +18,7 @@ open Suave
 
 
 let send r =
-   r |> Request.make "API_TOKEN_GOES_HERE"
+   r |> Request.make "EAAU0BhKdRoQBAGZBGcsxJ4yJllbyIVnm2lnbjv2RU3P7rhzmLGnLTfxT1OP0qETAkgLN5UqRBZCDoerBX0o5WAttG4PmZATwQkEfhSdZCqC7vjC3ZB9YvsqqqqQxu7pKtWHF70NsXZAEXRMHL55zk7FQGICwsLZARCcUEOZAwONHPQZDZD"
    |> Async.RunSynchronously
    |> printfn "%A"
 
@@ -29,13 +32,13 @@ let handler (callback : Callback) =
             send action
             match m.text with
             | Some text ->
-               let response = Message((Recipient.Id event.sender), Message.Text(sprintf "I got '%s' from you" text, None, None), None)
+               let response = Message((Recipient.Id event.sender), MessageParsing.ProcessMessage(text), None)
                send response
             | _ -> ()
 
 
 
-let app = Callback.webPart "/webhook" "VERIFICATION_TOKEN_GOES_HERE" handler
+let app = Callback.webPart "/webhook" "DONGDONG" handler
 
 open Suave.Logging
 let logger = Loggers.ConsoleWindowLogger LogLevel.Verbose

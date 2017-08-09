@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>c03a2fed-2dbb-4545-a002-abf40ffb1dc1</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>FacebookMessengerConnector</RootNamespace>
     <AssemblyName>FacebookMessengerConnector</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -33,22 +33,6 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\FacebookMessengerConnector.XML</DocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AssemblyInfo.fs" />
-    <None Include="paket.references" />
-    <Compile Include="ParsingHelpers.fs" />
-    <Compile Include="CallbackAPI.fs" />
-    <Compile Include="SendAPI.fs" />
-    <Compile Include="Extras.fs" />
-    <Compile Include="API.fs" />
-    <None Include="test.fsx" />
-  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
@@ -108,4 +92,33 @@
       </ItemGroup>
     </When>
   </Choose>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <None Include="paket.references" />
+    <Compile Include="ParsingHelpers.fs" />
+    <Compile Include="CallbackAPI.fs" />
+    <Compile Include="SendAPI.fs" />
+    <Compile Include="Extras.fs" />
+    <Compile Include="API.fs" />
+    <Compile Include="MessageParsing.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="test.fsx" />
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ApiAiSDK">
+      <HintPath>..\FbChatbot\packages\ApiAiSDK.1.6.5\lib\net35\ApiAiSDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\FbChatbot\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
 </Project>
