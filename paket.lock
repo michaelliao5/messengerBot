@@ -1,5 +1,5 @@
 IMPORT-TARGETS: FALSE
-FRAMEWORK: NET452
+RESTRICTION: == net452
 NUGET
   remote: http://api.nuget.org/v3/index.json
     FSharp.Core (4.0.0.1)
