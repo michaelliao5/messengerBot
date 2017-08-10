@@ -13,6 +13,14 @@ module MessageParsing =
   open Newtonsoft.Json
   open System.Text.RegularExpressions
 
+  type ScrapingResult = {
+    isbn : string
+    jetPrice : string
+    jetUrl : string
+    amazonPrice : string
+    amazonUrl : string
+  }
+
   let aiToken = new AIConfiguration("6adee404ca74426e9476a9e56acd32f9", SupportedLanguage.English);
   let apiAi = new ApiAi(aiToken)
 
@@ -21,42 +29,39 @@ module MessageParsing =
         if m.Success then Some(List.tail [ for g in m.Groups -> g.Value ])
         else None
 
-  let booktitleRun (bookTitle:string) : string*string = 
+  let scarpingRun (bookTitle:string) : ScrapingResult = 
     url (sprintf "https://jet.com/search?term=%s" <| bookTitle.Replace(" ", "%20"))
     click ".products-right"
-    let price = read ".formatted-value"
-    let isbn = elementWithText ".h5" "ISBN13"
-    let ss = read isbn
-    let s = ss.Split([|' ';'\n'|]).[1]
-    (s,price)
-    
-  let amazonPriceRun (isbn:string) : string = 
-    url <| "https://www.amazon.com/s/ref=nb_sb_noss_1?url=search-alias%3Daps&field-keywords=" + isbn
+    let jetPrice = read ".formatted-value"
+    let isbn = elementWithText ".h5" "ISBN13" |> read
+    let isbnString = isbn.Split([|' ';'\n'|]).[1]
+    let jetUrl = currentUrl ()
+    url <| "https://www.amazon.com/s/ref=nb_sb_noss_1?url=search-alias%3Daps&field-keywords=" + isbnString
     click ".s-access-image.cfMarker"
-    let price = read ".*-size-medium.a-color-price"
-    price
+    let amazonPrice = read ".*-size-medium.a-color-price"
+    let amazonUrl = currentUrl ()
+    {
+      isbn = isbnString
+      jetPrice = jetPrice
+      jetUrl = jetUrl
+      amazonPrice = amazonPrice
+      amazonUrl = amazonUrl       
+    }
 
 
-  let getISBN (bookTitle:string) : string*string = 
+  let getScrapingResult (bookTitle:string) : ScrapingResult = 
     start chrome
-    let (s,price) = booktitleRun(bookTitle)
+    let res = scarpingRun(bookTitle)
     quit()
-    (s,price)
-
-  let getAmazonPrice (isbn:string) : string = 
-    start chrome
-    let price = amazonPriceRun(isbn)
-    quit()
-    price
+    res
     
 
   let ProcessMessage (input:string) : Message = 
     match input with    
     | Regex @"look up book (.*)" [ bookTitle ] ->
-        let (isbn,jetPrice) = getISBN bookTitle
-        let amazonPrice = getAmazonPrice isbn
-        let msg = sprintf "Price on jet: %s Price on amazon:%s" jetPrice amazonPrice
-        Message.Text(isbn, None, None)
+        let res = getScrapingResult bookTitle
+        let msg = sprintf "Price on jet: %s Price on amazon:%s" res.jetPrice res.amazonPrice
+        Message.Text(msg, None, None)
     | _ -> Message.Text(apiAi.TextRequest(input).Result.Fulfillment.Speech, None, None)
 
   let ProcessMessage2 (input:string) : Message = 
