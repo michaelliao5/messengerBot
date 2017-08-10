@@ -12,8 +12,12 @@ module MessageParsing =
   open FSharp.Data
   open Newtonsoft.Json
   open System.Text.RegularExpressions
+  
+  type Input = 
+  | BookTitle of string
+  | ISBN of string
 
-  type ScrapingResult = {
+  type Output = {
     isbn : string
     jetPrice : string
     jetUrl : string
@@ -29,7 +33,7 @@ module MessageParsing =
         if m.Success then Some(List.tail [ for g in m.Groups -> g.Value ])
         else None
 
-  let scarpingRun (bookTitle:string) : ScrapingResult = 
+  let scarpingRun (bookTitle:string) : Output = 
     url (sprintf "https://jet.com/search?term=%s" <| bookTitle.Replace(" ", "%20"))
     click ".products-right"
     let jetPrice = read ".formatted-value"
@@ -38,7 +42,7 @@ module MessageParsing =
     let jetUrl = currentUrl ()
     url <| "https://www.amazon.com/s/ref=nb_sb_noss_1?url=search-alias%3Daps&field-keywords=" + isbnString
     click ".s-access-image.cfMarker"
-    let amazonPrice = read ".*-size-medium.a-color-price"
+    let amazonPrice = (elements ".a-size-medium.a-color-price").[0] |> read
     let amazonUrl = currentUrl ()
     {
       isbn = isbnString
@@ -49,7 +53,7 @@ module MessageParsing =
     }
 
 
-  let getScrapingResult (bookTitle:string) : ScrapingResult = 
+  let getScrapingResult (bookTitle:string) : Output = 
     start chrome
     let res = scarpingRun(bookTitle)
     quit()
