@@ -33,8 +33,11 @@ module MessageParsing =
         if m.Success then Some(List.tail [ for g in m.Groups -> g.Value ])
         else None
 
-  let scarpingRun (bookTitle:string) : Output = 
-    url (sprintf "https://jet.com/search?term=%s" <| bookTitle.Replace(" ", "%20"))
+  let scarpingRun (input:Input) : Output = 
+    match input with
+    | BookTitle title -> url (sprintf "https://jet.com/search?term=%s" <| title.Replace(" ", "%20"))
+    | ISBN isbn -> url (sprintf "https://jet.com/search?term=%s" <| isbn)
+    
     click ".products-right"
     let jetPrice = read ".formatted-value"
     let isbn = elementWithText ".h5" "ISBN13" |> read
@@ -53,9 +56,9 @@ module MessageParsing =
     }
 
 
-  let getScrapingResult (bookTitle:string) : Output = 
+  let getScrapingResult (input:Input) : Output = 
     start chrome
-    let res = scarpingRun(bookTitle)
+    let res = scarpingRun(input)
     quit()
     res
     
@@ -63,7 +66,11 @@ module MessageParsing =
   let ProcessMessage (input:string) : Message = 
     match input with    
     | Regex @"look up book (.*)" [ bookTitle ] ->
-        let res = getScrapingResult bookTitle
+        let res = getScrapingResult <| BookTitle bookTitle
+        let msg = sprintf "Price on jet: %s Price on amazon:%s" res.jetPrice res.amazonPrice
+        Message.Text(msg, None, None)
+    | Regex @"look up isbn (.*)" [ isbn ] ->
+        let res = getScrapingResult <| ISBN isbn
         let msg = sprintf "Price on jet: %s Price on amazon:%s" res.jetPrice res.amazonPrice
         Message.Text(msg, None, None)
     | _ -> Message.Text(apiAi.TextRequest(input).Result.Fulfillment.Speech, None, None)
