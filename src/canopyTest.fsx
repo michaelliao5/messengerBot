@@ -1,37 +1,32 @@
 ﻿#r "bin/debug/canopy.dll"
-
+#r "bin/debug/WebDriver.dll"
+#r "bin/debug/WebDriver.Support.dll"
 
 //these are similar to C# using statements
 open canopy
+open canopy.core
 open runner
 open System
+open OpenQA.Selenium
+
+let bookString = "The Death and Life of Great American Cities".Replace(" ", "+")
 
 //start an instance of the firefox browser
-start firefox
-
+start chrome
 //this is how you define a test
 "taking canopy for a spin" &&& fun _ ->
-    //this is an F# function body, it's whitespace enforced
 
-    //go to url
-    url "http://lefthandedgoat.github.io/canopy/testpages/"
+    let isbpUrl = sprintf "https://isbnsearch.org/search?s=%s+isbn" bookString
 
+//    url "https://jet.com/search?term=9780679741954"
+    let d = element "._Mjf"
+    let test = d.FindElement <| By.ClassName("title")
+    
+    printfn "test element: %s" test.Text
     //assert that the element with an id of 'welcome' has
     //the text 'Welcome'
-    "#welcome" == "Welcome"
-
-    //assert that the element with an id of 'firstName' has the value 'John'
-    "#firstName" == "John"
-
-    //change the value of element with
-    //an id of 'firstName' to 'Something Else'
-    "#firstName" << "Something Else"
-
-    //verify another element's value, click a button,
-    //verify the element is updated
-    "#button_clicked" == "button not clicked"
-    click "#button"
-    "#button_clicked" == "button clicked"
+//    let test = read ".price-non-sale"
+//    printfn "test string: %s" test
 
 //run all tests
 run()
