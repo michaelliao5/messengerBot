@@ -12,6 +12,19 @@ module MessageParsing =
   open FSharp.Data
   open Newtonsoft.Json
   open System.Text.RegularExpressions
+
+  ///
+
+  type Result<'a, 'b> = Choice<'a, 'b>
+
+  /// Active pattern for matching a Choice<'a, 'b> with Choice1Of2 = Ok and Choice2Of2 = Error
+  let inline (|Ok|Error|) c = c
+
+  /// Indicates ok as Choice1Of2
+  let inline Ok v : Result<'a, 'e> = Choice1Of2 v
+
+  /// Indicates error as Choice2Of2
+  let inline Error e : Result<'a, 'e> = Choice2Of2 e
   
   type Input = 
   | BookTitle of string

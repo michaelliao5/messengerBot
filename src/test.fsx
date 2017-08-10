@@ -20,7 +20,7 @@
 
 
   let send r =
-     r |> Request.make "EAAU0BhKdRoQBAGZBGcsxJ4yJllbyIVnm2lnbjv2RU3P7rhzmLGnLTfxT1OP0qETAkgLN5UqRBZCDoerBX0o5WAttG4PmZATwQkEfhSdZCqC7vjC3ZB9YvsqqqqQxu7pKtWHF70NsXZAEXRMHL55zk7FQGICwsLZARCcUEOZAwONHPQZDZD"
+     r |> Request.make "EAAU0BhKdRoQBAAdQrUVaPXZCuAPfZCdixM845MGw1XMDKGfOvSw3OxbD00DDwuKRhhh3cYZBZC3AJAXGt40y13ril4GVfBtqaZANik8v8VEZBQGjGXb73fkwFcX1ZBe32921RXlNOUWxNA2BnZA1d6N5WDxj3sizp2azOr2ydBUXyAZDZD"
      |> Async.RunSynchronously
      |> printfn "%A"
 
@@ -44,7 +44,8 @@
 
   open Suave.Logging
   let logger = Loggers.ConsoleWindowLogger LogLevel.Verbose
-
-  startWebServer {defaultConfig with logger = logger} app
+  let port = 8082
+  let local = Suave.Http.HttpBinding.mkSimple HTTP "127.0.0.1" port
+  startWebServer {defaultConfig with bindings = [local]; logger = logger} app
 
 
